@@ -1,4 +1,7 @@
 # MvcControls
+
+[![Build status](https://ci.appveyor.com/api/projects/status/g0ibla0ffr06q6io?svg=true)](https://ci.appveyor.com/project/Code1110/mvccontrols)
+
 ## ListView
 ### Prequisites
 * Make sure jQuery is loaded first. When using the default sample ASP.NET application, move the line `@Scripts.Render("~/bundles/jquery")` in `_Layout.cshtml` from the bottom to inside the `<head>`.
