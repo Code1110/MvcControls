@@ -1,0 +1,26 @@
+﻿.dielis {
+    padding-left: 0;
+}
+
+    .dielis li {
+        padding: 5px;
+        margin: 2px;
+        border: 1px solid lightgrey;
+        width: 200px;
+        list-style-type: none;
+    }
+
+        .dielis li:hover {
+            border-color: black;
+        }
+
+.selectedlistviewitem {
+    background-color: lightgrey;
+}
+
+.controlcontainer {
+    height: 200px;
+    width: 230px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}

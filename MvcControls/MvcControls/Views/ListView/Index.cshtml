@@ -1,0 +1,26 @@
+﻿@using MvcControls.Controls
+@model MvcControls.Models.ListViewTestModel
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+@using (Html.BeginForm("Test", "ListView"))
+{
+    @*<input type="text" id="sc" autocomplete="off" autofocus placeholder="Suchen..." style="width: 230px;" class="form-control" />*@
+    @Html.ListViewFor(m => m.DieChicks, showSearchField: true)
+    @Html.ListViewFor(m => m.MeineItems, showSearchField: true)
+    <input type="submit" value="OK" class="btn-default btn"/>
+    <div>@Model.SelectionResult</div>
+}
+
+
+@Styles.Render("~/Content/ListView.css")
+
+@section scripts
+{
+    @Scripts.Render("~/Scripts/listView.js")
+}
+
