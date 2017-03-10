@@ -1,16 +1,15 @@
-﻿.dielis {
+﻿.listviewul {
     padding-left: 0;
 }
 
-    .dielis li {
+    .listviewul li {
         padding: 5px;
         margin: 2px;
         border: 1px solid lightgrey;
-        width: 200px;
         list-style-type: none;
     }
 
-        .dielis li:hover {
+        .listviewul li:hover {
             border-color: black;
         }
 
@@ -18,9 +17,16 @@
     background-color: lightgrey;
 }
 
-.controlcontainer {
-    height: 200px;
-    width: 230px;
+.listviewitemspanel {
+    height: 300px;
     overflow-x: hidden;
     overflow-y: scroll;
+}
+
+.listviewcontrolcontainer {
+    width: 250px;
+}
+
+.listviewcontrolcontainer .panel {
+    margin-bottom: 0px;
 }

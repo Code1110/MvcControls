@@ -29,27 +29,35 @@ namespace MvcControls.Controls
         }
 
         public static IHtmlString ListViewFor<TModel>(this HtmlHelper<TModel> helper, Expression<Func<TModel, IEnumerable<ISelectable>>> items,
-            bool showSearchField = true)
+            bool showSearchField = true, bool showCheckAll = false)
         {
             // todo: add these optional parameters
-            // * ShowSearchField: true / false
             // * DisplayMode: SingleList / DoubleList => http://jqueryui.com/sortable/#connect-lists
-            // * select / unselect all
             // * AllowSelect per Item
             // * ShowCheckboxes
 
             // todo: control shoud add js/css automatically
-            // todo: ensure unique names for the control (div)
 
             var metaItems = ModelMetadata.FromLambdaExpression(items, helper.ViewData);
             IEnumerable<ISelectable> listItems = (IEnumerable<ISelectable>)metaItems.Model;
             List<ISelectable> selectables = listItems.ToList();
 
-            // d.DisplayName
             string controlId = ExpressionHelper.GetExpressionText(items);
 
-            TagBuilder div = new TagBuilder("div");
-            div.AddCssClass("controlcontainer panel panel-default");
+            TagBuilder controlContainer = new TagBuilder("div");
+            controlContainer.AddCssClass("listviewcontrolcontainer");
+            controlContainer.Attributes.Add("id", controlId);
+
+            TagBuilder controlBody = new TagBuilder("div");
+            controlBody.AddCssClass("panel panel-default");
+
+            // Show DisplayName, if specified:
+            if (!string.IsNullOrEmpty(metaItems.DisplayName))
+            {
+                TagBuilder controlLabel = new TagBuilder("div");
+                controlLabel.InnerHtml += metaItems.DisplayName;
+                controlContainer.InnerHtml += controlLabel.ToString();
+            }
 
             if (showSearchField)
             {
@@ -61,40 +69,15 @@ namespace MvcControls.Controls
                 searchField.Attributes.Add("placeholder", "Suchen...");
                 searchField.AddCssClass("form-control");
                 // autofocus
-                div.InnerHtml += searchField.ToString();
+                controlBody.InnerHtml += searchField.ToString();
             }
 
             TagBuilder ul = new TagBuilder("ul");
-            ul.Attributes.Add("id", controlId);
-            ul.AddCssClass("dielis");
+            ul.AddCssClass("listviewul");
 
-            //foreach (ISelectable item in listItems)
-            //{
-            //    Dictionary<string, object> attrs = new Dictionary<string, object>();
-            //    attrs.Add("id", "chk" + item.Id);
-            //    //attrs.Add("name", "chk" + item.Id);
-            //    //attrs.Add("class", "vdfvdfvdv");
-            //    MvcHtmlString str = helper.CheckBoxFor(item1 => item.IsSelected, attrs);
-
-            //    div.InnerHtml += str.ToString();
-            //}
-
-            //List<ISelectable> xx = ((IEnumerable<ISelectable>) helper.ViewData.Model).ToList();
-
-
+            // Add all the items:
             for (int i = 0; i < selectables.Count; i++)
             {
-                //Dictionary<string, object> attrs = new Dictionary<string, object>
-                //{
-                //    {"id", "chk" + selectables[i].Id}
-                //};
-                //helper.ViewContext.ViewData.TemplateInfo.GetFullHtmlFieldName()
-
-                //MvcHtmlString str = helper.CheckBoxFor(item1 => selectables[i].IsSelected, attrs);
-                //MvcHtmlString str = helper.CheckBoxFor(item1 => ((List<MeinItem>)d.Model)[i].IsSelected, attrs);
-                //MvcHtmlString str = helper.CheckBoxFor();
-                //helper.CheckBox()
-
                 TagBuilder li = new TagBuilder("li");
                 li.Attributes.Add("data-id", selectables[i].Id.ToString());
                 li.InnerHtml = selectables[i].Caption;
@@ -114,7 +97,9 @@ namespace MvcControls.Controls
                 ul.InnerHtml += li.ToString() + textboxSelected + textboxCaption + textboxId;
             }
 
-            div.InnerHtml += ul;
+            TagBuilder itemsPanel = new TagBuilder("div");
+            itemsPanel.AddCssClass("listviewitemspanel");
+            itemsPanel.InnerHtml += ul;
 
             // Lambdas und so:
             // http://stackoverflow.com/questions/3813340/get-value-from-asp-net-mvc-lambda-expression
@@ -133,23 +118,6 @@ namespace MvcControls.Controls
             // https://www.codeproject.com/articles/292050/checkboxlist-for-a-missing-mvc-extension
 
 
-            //foreach(var x in items.)
-
-            //var y = items => items.
-
-            //string n = ((MemberExpression)items.Body).Member.Name;
-
-            //var u = ((LambdaExpression) items).Compile().DynamicInvoke(helper);
-
-            //d.
-            //items.Body.
-            //return new HtmlString("Hans");
-
-            //Scripts.
-
-            
-            //System.Web.Optimization.
-
             StringBuilder js = new StringBuilder();
             js.AppendLine("<script type=\"text/javascript\">");
             js.AppendLine("$(document).ready(function() {");
@@ -157,7 +125,25 @@ namespace MvcControls.Controls
             js.AppendLine("});");
             js.AppendLine("</script>");
 
-            return new HtmlString(div + js.ToString());
+            controlBody.InnerHtml += itemsPanel;
+            controlContainer.InnerHtml += controlBody.ToString();
+
+            if (showCheckAll)
+            {
+                TagBuilder checkAll = new TagBuilder("a");
+                checkAll.Attributes.Add("href", $"javascript:checkAllItems('{controlId}');");
+                checkAll.InnerHtml += "Select All";
+                controlContainer.InnerHtml += checkAll;
+
+                controlContainer.InnerHtml += "&nbsp;|&nbsp;";
+
+                TagBuilder uncheckAll = new TagBuilder("a");
+                uncheckAll.Attributes.Add("href", $"javascript:uncheckAllItems('{controlId}');");
+                uncheckAll.InnerHtml += "Deselect All";
+                controlContainer.InnerHtml += uncheckAll;
+            }
+
+            return new HtmlString(controlContainer + js.ToString());
         }
 
         public static IHtmlString ListView2For<TModel>(this HtmlHelper<TModel> helper,
@@ -167,7 +153,7 @@ namespace MvcControls.Controls
 
             TagBuilder ul = new TagBuilder("ul");
             ul.Attributes.Add("id", ExpressionHelper.GetExpressionText(items));
-            ul.AddCssClass("dielis");
+            ul.AddCssClass("listviewul");
 
             var metaItems = ModelMetadata.FromLambdaExpression(items, helper.ViewData);
             IEnumerable<ISelectable> listItems = (IEnumerable<ISelectable>)metaItems.Model;

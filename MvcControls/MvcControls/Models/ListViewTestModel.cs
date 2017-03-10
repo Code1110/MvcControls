@@ -13,6 +13,7 @@ namespace MvcControls.Models
         [DisplayName("Die Items")]
         public List<MeinItem> MeineItems { get; set; }
 
+        [DisplayName("Mitarbeiter")]
         public List<MeinItem> DieChicks { get; set; }
 
         public List<string> SelectedChicks { get; set; }
@@ -27,11 +28,7 @@ namespace MvcControls.Models
 
         public ListViewTestModel()
         {
-            //MeineItems = new List<ISelectable>();
-
-            //MeineItems.Add(new MeinItem(1, "Hans"));
-
-            List<MeinItem> items = new List<MeinItem>
+            MeineItems = new List<MeinItem>
             {
                 new MeinItem(1, "Hans"),
                 new MeinItem(2, "Pesche"),
@@ -39,8 +36,6 @@ namespace MvcControls.Models
                 new MeinItem(4, "Ruedi"),
                 new MeinItem(5, "Rudolf")
             };
-
-            MeineItems = items;
 
             DieChicks = new List<MeinItem>
             {
